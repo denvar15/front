@@ -58,10 +58,25 @@ export default class Offers extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get("http://collectix.store:3334/api/tasks")
-      .then(function (response) {
-        this.setState({ tasks: response });
+    let categories = axios
+      .get("http://localhost:4100/v1/users/getUsers")
+      .then(response => {
+        this.setState({ users: response.data });
+        this.NFTs = [];
+        console.log(this.state.users);
+        this.state.users.forEach(user => {
+          user.NFT.forEach(nft_user => {
+            this.NFTs.push(nft_user);
+          });
+        });
+        let NFTsOnSale = [];
+        this.NFTs.forEach(NFT => {
+          const jsonManifestBuffer = this.props.getFromIPFS(NFT.uri.slice(6, 100)).then(jsonManifestBuffer => {
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            NFTsOnSale.push({ id: NFT.tokenId, uri: NFT.uri, owner: NFT.creators[0].account, ...jsonManifest });
+          });
+        });
+        this.setState({ NFTsOnSale: NFTsOnSale });
       })
       .catch(function (error) {
         // handle error
@@ -70,36 +85,33 @@ export default class Offers extends React.Component {
   }
 
   render() {
+    console.log("AAAAAA", this.state.NFTsOnSale);
     return (
       <div className="profile-offers">
-        <h2 className="main-title">
-          Offers
-        </h2>
-        <h3>
-          Task 1
-        </h3>
+        <h2 className="main-title">Offers</h2>
+        <h3>Task 1</h3>
         <List
           grid={{ gutter: 16, column: 4 }}
           dataSource={this.state.NFTsOnSale}
           className="collection__list clear-list"
           renderItem={item => {
             const id = item.id;
+            item.image = item.image ? item.image : "sfsfs";
+            let url = "https://gateway.pinata.cloud/" + item.image.slice(7, 100);
             return (
               <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                <li className="collection__item" style={{width:"80%"}}>
+                <li className="collection__item" style={{ width: "80%" }}>
                   <div className="collection__item-wrapper">
-                    <img className="collection__item-image" src={collectionItem}/>
+                    <img className="collection__item-image" src={url} />
                     <a className="collection__name" href="">
-                      Name of NFT
+                      {item.name}
                     </a>
                     <div className="collection__author">
-                      <span className="collection__author-name">Ally Smith</span>
+                      <span className="collection__author-name">{item.owner}</span>
                       <span className="collection__author-raiting">(Rating: 12)</span>
                     </div>
-                    <div className="collection__item-description">
-                      Description of NFT that very intersting for many collectors. Author is very popular, as we know.
-                    </div>
-                    <div className="collection__creator">Creator 30% royalties</div>
+                    <div className="collection__item-description">{item.description}</div>
+                    <div className="collection__creator">Royalties</div>
                     <button className="main-button collection__item-buy">Buy</button>
                   </div>
                 </li>

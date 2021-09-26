@@ -249,7 +249,7 @@ export default class Profile extends React.Component {
                     </li>
                     <li className="collectors__params-item">
                       <span className="collectors__name-param">NFTs on sale:</span>
-                      <span className="collectors__value-param">{this.state.profile.NFTsOnSale}</span>
+                      <span className="collectors__value-param">{this.state.NFTsOnSale.length}</span>
                     </li>
                   </ul>
                 </div>

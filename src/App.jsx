@@ -597,9 +597,6 @@ function App(props) {
             <Route exact path="/create-task">
               <CreateTask address={address} />
             </Route>
-            <Route exact path="/create-collection">
-              <CreateCollection />
-            </Route>
             <Route exact path="/tasks">
               <TaskFeed yourCollectibles={yourCollectibles} />
             </Route>
@@ -613,7 +610,7 @@ function App(props) {
               />
             </Route>
             <Route exact path="/offers">
-              <Offers />
+              <Offers address={address} getFromIPFS={getFromIPFS} />
             </Route>
             <Route path="/mint">
               <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
