@@ -1,6 +1,5 @@
 {
   "name": "Collectix",
-  "version": "1.0.0",
   "homepage": ".",
   "browserslist": {
     "production": [
